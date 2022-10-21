@@ -19,7 +19,7 @@ def cv_show(img,name):
 img = cv2.imread("pic/pic_2.jpg")
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 ret, thresh = cv2.threshold(gray,200,255,cv2.THRESH_BINARY)
-contours,hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+_,contours,hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
 
 draw_img = img.copy()
 cnt = contours[19]
