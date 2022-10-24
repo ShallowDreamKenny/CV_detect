@@ -6,6 +6,7 @@
 # Author     ：Kust Kenny
 # version    ：python 3.6
 # Description：多进程追踪
+# 虚拟机中测试30帧没问题
 """
 from FPS_Class import FPS
 import cv2
