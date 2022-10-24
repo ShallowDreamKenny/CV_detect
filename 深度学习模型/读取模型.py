@@ -10,7 +10,9 @@
 import cv2.dnn
 import numpy as np
 
-net = cv2.dnn.readNetFromONNX("./models/test.onnx")
+# weights模型需要导入cfg文件，并且需要opencv的版本在4.4以上
+# 推荐3.7版本的python安装4.5.1版本opencv-python及opencv-contrib-python
+net = cv2.dnn.readNetFromDarknet("./models/yolov4s.cfg","./models/yolov4s.weights")
 img = cv2.imread("./pic/img.png")
 
 blob = cv2.dnn.blobFromImage(img,1,(32,32))
