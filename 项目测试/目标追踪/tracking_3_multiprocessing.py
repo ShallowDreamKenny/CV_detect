@@ -134,8 +134,8 @@ if __name__ == '__main__':
                     label = CLASS[idx]
 
                     # 只保留人的
-                    if label != "person":
-                        continue
+                    # if label != "person":
+                    #     continue
 
                     # 得到boundingbox
                     # 根据框架修改的得到的box值

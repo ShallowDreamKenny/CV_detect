@@ -23,7 +23,7 @@ OPENCV_OBJECT_TRACKERS = {
 
 def init_arg():
     ap = argparse.ArgumentParser()
-    ap.add_argument("-v","--video",type=str,default="./video/fly_2.mp4",help="input the video or camera")
+    ap.add_argument("-v","--video",type=str,default="./video/fly_1.mp4",help="input the video or camera")
     ap.add_argument("-t","--tracker",type=str,default="kcf",help="please choose the tracker algorithm")
     args = vars(ap.parse_args())
     return args
