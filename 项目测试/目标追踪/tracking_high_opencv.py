@@ -10,7 +10,8 @@
 import cv2
 # a = cv2.TrackerKCF_create()
 a = cv2.legacy.MultiTracker_create()
-cap = cv2.VideoCapture("video/fly_1.mp4")
+# cap = cv2.VideoCapture("video/fly_1.mp4")
+cap = cv2.VideoCapture("http://192.168.137.169:8081")
 
 
 _,frame = cap.read()
