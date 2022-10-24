@@ -105,6 +105,7 @@ if __name__ == '__main__':
         if frame is None:
             break
 
+
         frame,rgb = pre_process_frame(frame)
 
         if args["output"] is not None and writer is None:
