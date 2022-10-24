@@ -138,7 +138,7 @@ while True:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
     cv2.imshow("Frame", frame)
-    key = cv2.waitKey(10) & 0xFF
+    key = cv2.waitKey(1) & 0xFF
 
     if key == 27:
         break
