@@ -5,7 +5,7 @@
 # Time       ：10/24/22 1:06 PM
 # Author     ：Kust Kenny
 # version    ：python 3.6
-# Description：先导入深度学习框架，检测出boundingbox后再，使用dlib进行追踪
+# Description：先导入模型，检测出boundingbox后再，使用dlib进行追踪
 """
 from FPS_Class import FPS
 import cv2
@@ -13,6 +13,26 @@ import numpy as np
 import dlib
 import argparse
 
+def compute_IOU(rec1, rec2):
+    """
+    计算两个矩形框的交并比。
+    :param rec1: (x0,y0,x1,y1)      (x0,y0)代表矩形左上的顶点，（x1,y1）代表矩形右下的顶点。下同。
+    :param rec2: (x0,y0,x1,y1)
+    :return: 交并比IOU.
+    """
+    left_column_max = max(rec1[0], rec2[0])
+    right_column_min = min(rec1[2], rec2[2])
+    up_row_max = max(rec1[1], rec2[1])
+    down_row_min = min(rec1[3], rec2[3])
+    # 两矩形无相交区域的情况
+    if left_column_max >= right_column_min or down_row_min <= up_row_max:
+        return 0
+    # 两矩形有相交区域的情况
+    else:
+        S1 = (rec1[2] - rec1[0]) * (rec1[3] - rec1[1])
+        S2 = (rec2[2] - rec2[0]) * (rec2[3] - rec2[1])
+        S_cross = (down_row_min - up_row_max) * (right_column_min - left_column_max)
+        return S_cross / (S1 + S2 - S_cross)
 
 def init_arg():
     """
@@ -68,10 +88,11 @@ if __name__ == '__main__':
     args = init_arg()
     cap, net = init_pre(args)
     writer = None
-
+    index = 0
     # 追踪目标的数据
     trackers = []
     labels = []
+    key = 0
 
     fps = FPS().start()
 
@@ -87,11 +108,7 @@ if __name__ == '__main__':
             fourcc = cv2.VideoWriter_fourcc(*"MJPG")
             writer = cv2.VideoWriter(args["output"],fourcc,30,
                                      (frame.shape[1],frame.shape[0]),True)
-        # elif args["output"] is None and writer is None:
-        #     fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-        #     writer = cv2.VideoWriter("./output/output.MJPG", fourcc, 30,
-        #                              (frame.shape[1], frame.shape[0]), True)
-
+        # if key == ord("g"):
         if len(trackers) == 0:
             (h,w) = frame.shape[:2]
             # 与模型网络保持一致
@@ -119,16 +136,38 @@ if __name__ == '__main__':
                     # dlib不支持小数
                     (startX,startY,endX,endY) = box.astype("int")
 
-                    # 使用dlib进行目标追踪
-                    t = dlib.correlation_tracker()
-                    rect = dlib.rectangle(int(startX),int(startY),int(endX),int(endY))
-                    t.start_track(rgb,rect)
+                    if index == 0:
+                        t = dlib.correlation_tracker()
+                        rect = dlib.rectangle(int(startX), int(startY), int(endX), int(endY))
+                        t.start_track(rgb, rect)
 
-                    # 保存结果
-                    labels.append(label)
-                    trackers.append(t)
-                    cv2.rectangle(frame,(startX,startY),(endX,endY),(0,255,0),2)
-                    cv2.putText(frame,label,(startX,startY-15),cv2.FONT_HERSHEY_SIMPLEX,0.45,(0,255,0),2)
+                        # 保存结果
+                        labels.append(label)
+                        trackers.append(t)
+                        cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 255, 0), 2)
+                        cv2.putText(frame, label, (startX, startY - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 2)
+                    else:
+                        # 计算交并比
+                        for a in trackers:
+                            a.update(rgb)
+                            pos = a.get_position()
+                            startX_o = int(pos.left())
+                            startY_o = int(pos.top())
+                            endX_o = int(pos.right())
+                            endY_o = int(pos.bottom())
+                            if ( compute_IOU((startX_o,startY_o,endX_o,endY_o),(startX,startY,endX,endY)) < 0.3):
+                                # 使用dlib进行目标追踪
+                                t = dlib.correlation_tracker()
+                                rect = dlib.rectangle(int(startX),int(startY),int(endX),int(endY))
+                                t.start_track(rgb,rect)
+
+                                # 保存结果
+                                labels.append(label)
+                                trackers.append(t)
+                                cv2.rectangle(frame,(startX,startY),(endX,endY),(0,255,0),2)
+                                cv2.putText(frame,label,(startX,startY-15),cv2.FONT_HERSHEY_SIMPLEX,0.45,(0,255,0),2)
+                                break
+                    index = 1
         else:#已经有框之后
             for(t,l) in zip(trackers,labels):
                 t.update(rgb)
@@ -147,7 +186,7 @@ if __name__ == '__main__':
             writer.write(frame)
 
         cv2.imshow("frame",frame)
-        key = cv2.waitKey(1) & 0xFF
+        key = cv2.waitKey(15) & 0xFF
         if key == 27:
             break
 

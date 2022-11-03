@@ -14,11 +14,11 @@ import argparse
 
 OPENCV_OBJECT_TRACKERS = {
     "kcf":cv2.TrackerKCF_create,
-    "boost": cv2.TrackerBoosting_create,
+    "boost": cv2.legacy.TrackerBoosting_create,
     "csrt": cv2.TrackerCSRT_create,
     "goturn":cv2.TrackerGOTURN_create,
     "mil":cv2.TrackerMIL_create(),
-    "mosse":cv2.TrackerMOSSE_create
+    "mosse":cv2.legacy.TrackerMOSSE_create
 }
 
 def init_arg():
@@ -31,7 +31,7 @@ def init_arg():
 if __name__ == '__main__':
     args = init_arg()
     cap = cv2.VideoCapture(args["video"])
-    trackers = cv2.MultiTracker_create()
+    trackers = cv2.legacy.MultiTracker_create()
 
     _ = True
     while _:
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
             # 创建一个新的追踪器
             tracker = OPENCV_OBJECT_TRACKERS[args["tracker"]]()
-            trackers.add(tracker,frame,box)
+            trackers.add(cv2.legacy.TrackerKCF_create(),frame,box)
         elif key == 27:
             break
     cv2.destroyAllWindows()

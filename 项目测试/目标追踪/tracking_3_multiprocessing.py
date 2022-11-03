@@ -6,7 +6,11 @@
 # Author     ：Kust Kenny
 # version    ：python 3.6
 # Description：多进程追踪
-# 虚拟机中测试30帧没问题
+# unchargeAND sclient model-1核心2GB虚拟机中测试9帧 占用内存约320M
+# uncharge-1核心2GB虚拟机中测试13帧 占用内存约320M
+# unchargeAND sclient model-2核心4GB虚拟机中测试15帧 占用内存约320M
+# uncharge-2核心4GB虚拟机中测试23帧 占用内存约300M
+# charged-8核心虚拟机中测试30帧没问题
 """
 from FPS_Class import FPS
 import cv2
@@ -169,20 +173,6 @@ if __name__ == '__main__':
                     # trackers.append(t)
                     cv2.rectangle(frame,(startX,startY),(endX,endY),(0,255,0),2)
                     cv2.putText(frame,label,(startX,startY-15),cv2.FONT_HERSHEY_SIMPLEX,0.45,(0,255,0),2)
-
-        # else:#已经有框之后
-        #     for(t,l) in zip(trackers,labels):
-        #         t.update(rgb)
-        #         pos = t.get_position()
-        #
-        #         # 得到位置
-        #         startX = int(pos.left())
-        #         startY = int(pos.top())
-        #         endX = int(pos.right())
-        #         endY = int(pos.bottom())
-        #
-        #         cv2.rectangle(frame,(startX,startY),(endX,endY),(0,255,0),2)
-        #         cv2.putText(frame, l, (startX, startY - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 255, 0), 2)
         else:
             for iq in inputQueues:
                 # 把图像传入每一个进程
