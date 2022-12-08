@@ -11,8 +11,8 @@ import cv2
 import numpy as np
 import argparse
 import pyrealsense2 as rs
-import rospy
-from geometry_msgs.msg import Point
+# import rospy
+# from geometry_msgs.msg import Point
 
 
 
@@ -36,9 +36,9 @@ def init_arg():
 if __name__ == '__main__':
     args = init_arg()
     trackers = cv2.legacy.MultiTracker_create()
-    rospy.init_node("listener", anonymous=True)
-    point = Point()
-    image_point_pubulish = rospy.Publisher('/camera/point', Point, queue_size=1)
+    # rospy.init_node("listener", anonymous=True)
+    # point = Point()
+    # image_point_pubulish = rospy.Publisher('/camera/point', Point, queue_size=1)
 
     _ = True
 
@@ -80,11 +80,11 @@ if __name__ == '__main__':
                         #print(depth_image[int(y + h / 2), int(x + w/2)])
                         i += 1
                 distance =  a/i
-                # print(a / i)
-                point.x = x + w/2
-                point.y = y + h/2
-                point.z = distance
-                image_point_pubulish.publish(point)
+                print(a / i)
+                # point.x = x + w/2
+                # point.y = y + h/2
+                # point.z = distance
+                # image_point_pubulish.publish(point)
         except:
             pass
 
